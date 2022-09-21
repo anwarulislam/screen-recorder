@@ -15,7 +15,7 @@
     </div>
 
     <button
-      @click="startRecording(mediaStream)"
+      ref="startRecordingBtn"
       aria-label="Start"
       v-if="streamStatus === 'STREAMING'"
     >
@@ -56,6 +56,8 @@
 import ysFixWebmDuration from "fix-webm-duration";
 import { ref } from "vue";
 
+const startRecordingBtn = ref<HTMLButtonElement | null>(null);
+
 type MediaRecorderState =
   | "STREAMING"
   | "INTERVAL"
@@ -80,10 +82,7 @@ function startStream() {
   // Requests a new MediaStream of the user's screen with video (display) and audio (if enabled) tracks
   navigator.mediaDevices
     .getDisplayMedia({
-      video: {
-        // cursor: "always"
-      },
-      audio: true,
+      video: {},
       // When the Promise returned by getDisplayMedia() is resolved, do the following
     })
     .then((stream) => {
@@ -100,14 +99,11 @@ function startStream() {
       return new Promise((resolve) => (preview.onplaying = resolve));
       // Calls startRecording() with the preview stream and receives recordedChunks (data) when finished recording
     })
-    .then(() => {
-      console.log("preview", preview);
-      return startRecording(preview.captureStream());
-    })
+    .then(() => startRecording(preview.captureStream()))
     .then((recordedChunks) => {
-      // Merges the chunks into a single Blob under MP4 format
+      // Merges the chunks into a single Blob under video format
       let recordedBlob = new Blob(recordedChunks, {
-        type: "video/mp4",
+        type: "video/webm",
       });
       // Fixes the recorded blob so that it is seekable (Chrome and Firefox bug)
       ysFixWebmDuration(recordedBlob, duration.value, { logger: false }).then(
@@ -119,16 +115,33 @@ function startStream() {
     });
 }
 
+function getSupportedMimeTypes() {
+  const possibleTypes = [
+    "video/webm;codecs=vp9,opus",
+    "video/webm;codecs=vp8,opus",
+    "video/webm;codecs=h264,opus",
+    "video/mp4;codecs=h264,aac",
+  ];
+  return possibleTypes.filter((mimeType) => {
+    return MediaRecorder.isTypeSupported(mimeType);
+  });
+}
+
 // Handles starting the recording process
 async function startRecording(stream: MediaStream | null) {
   if (!stream) return;
   console.log("start recording", stream);
   // Creates the MediaRecorder that will handle recording the input stream
-  let recorder = new MediaRecorder(stream);
+
+  var options = { mimeType: getSupportedMimeTypes()[0] };
+
+  let recorder = new MediaRecorder(stream, options);
   // Holds the Blobs of media data
   let data: any[] = [];
   // The event handler simply pushes the Blob onto the data array
   recorder.ondataavailable = (event) => data.push(event.data);
+
+  await buttonClick(startRecordingBtn.value as HTMLButtonElement);
 
   // Hides start button and displays count and stop button
   streamStatus.value = "INTERVAL";
@@ -154,6 +167,11 @@ async function startRecording(stream: MediaStream | null) {
   await Promise.all([stopped, recorded]);
   stopStream(stream);
   return data;
+}
+
+// Returns a new Promise which resolves once the passed button is clicked
+function buttonClick(button: HTMLButtonElement) {
+  return new Promise((resolve) => (button.onclick = resolve));
 }
 
 // Counts down 3 seconds
@@ -191,7 +209,7 @@ function downloadRecordedVideo() {
   // create a link and click it
   const link = document.createElement("a");
   link.href = recordedSource.value;
-  link.download = getDownloadName() + ".mp4";
+  link.download = getDownloadName() + ".webm";
   link.click();
 
   // remove link
