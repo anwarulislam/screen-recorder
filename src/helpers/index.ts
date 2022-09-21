@@ -1,4 +1,4 @@
-export const isMobileUser = () => {
+export const hasSupport = () => {
   // Checks if user is on mobile and displays alert message
   if (
     /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
@@ -8,16 +8,50 @@ export const isMobileUser = () => {
       navigator.userAgent.substr(0, 4)
     )
   ) {
-    alert(
-      "Oh no! Screen recording from this web app only works on desktop browsers right now due to an API limitation. Please visit this site on a computer!"
-    );
     console.log("Mobile user detected. Show modal");
+    return {
+      type: "mobile",
+      isMobile: true,
+      message:
+        "Oh no! Screen recording from this web app only works on desktop browsers right now due to an API limitation. Please visit this site on a computer!",
+    };
     // Checks if user is on IE (*facepalm*) and displays alert message
   } else if (/MSIE|Trident.*rv\:11\./i.test(navigator.userAgent)) {
-    alert(
-      "Dude! This web app uses modern APIs and won't work on Internet Explorer! Please use a web browser like Chrome, Edge, or Firefox."
-    );
+    return {
+      type: "support",
+      isMobile: false,
+      message:
+        "Dude! This web app uses modern APIs and won't work on Internet Explorer! Please use a web browser like Chrome, Edge, or Firefox.",
+    };
   }
 
-  return false
+  return false;
 };
+
+// Gets the name for the download in time format
+export const getDownloadName = () => {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = pad(date.getMonth() + 1);
+  let day = pad(date.getDate());
+  let hour = date.getHours();
+  let amPm = "AM";
+  if (hour >= 12) {
+    amPm = "PM";
+  }
+  // Converts hour to 12-hour format
+  hour = (hour + 24) % 12 || 12;
+  let minute = date.getMinutes();
+  let second = date.getSeconds();
+
+  return `Recording ${year}-${month}-${day} at ${hour}.${minute}.${second} ${amPm}`;
+};
+
+// Returns the passed number with a leading 0 if less than 10
+function pad(n: number) {
+  if (n < 10) {
+    return "0" + n;
+  } else {
+    return n;
+  }
+}
