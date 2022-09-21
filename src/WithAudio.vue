@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="container mx-auto text-center">
     <div class="home-container" v-if="streamStatus === 'NONE'">
       <button @click="startStream()">
@@ -231,4 +231,4 @@ video {
   @apply rounded;
   @apply max-h-96;
 }
-</style>
+</style> -->
