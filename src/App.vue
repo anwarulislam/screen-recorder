@@ -1,6 +1,6 @@
 <template>
-  <!-- <ScreenOnly /> -->
-  <WithAudio />
+  <ScreenOnly />
+  <!-- <WithAudio /> -->
 </template>
 
 <script setup lang="ts">

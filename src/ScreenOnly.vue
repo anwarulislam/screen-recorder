@@ -76,19 +76,65 @@ let startTime = 0;
 const recordedSource = ref<any>(null);
 let preview = ref<HTMLVideoElement | any>(null);
 
-function startStream() {
+const mergeAudioStreams = (
+  desktopStream: MediaStream,
+  voiceStream: MediaStream
+) => {
+  const context = new AudioContext();
+  const destination = context.createMediaStreamDestination();
+  let hasDesktop = false;
+  let hasVoice = false;
+  if (desktopStream && desktopStream.getAudioTracks().length > 0) {
+    // If you don't want to share Audio from the desktop it should still work with just the voice.
+    const source1 = context.createMediaStreamSource(desktopStream);
+    const desktopGain = context.createGain();
+    desktopGain.gain.value = 0.7;
+    source1.connect(desktopGain).connect(destination);
+    hasDesktop = true;
+  }
+
+  if (voiceStream && voiceStream.getAudioTracks().length > 0) {
+    const source2 = context.createMediaStreamSource(voiceStream);
+    const voiceGain = context.createGain();
+    voiceGain.gain.value = 0.7;
+    source2.connect(voiceGain).connect(destination);
+    hasVoice = true;
+  }
+
+  return hasDesktop || hasVoice ? destination.stream.getAudioTracks() : [];
+};
+
+async function startStream() {
   preview = document.getElementById("preview") as any;
   if (!preview) return;
   streamStatus.value = "STREAMING";
   // Requests a new MediaStream of the user's screen with video (display) and audio (if enabled) tracks
+
+  const audio = true;
+  const mic = true;
+
+  let desktopStream, voiceStream;
+
   navigator.mediaDevices
-    .getDisplayMedia({
-      video: {},
+    .getUserMedia({
+      video: false,
+      audio: audio,
       // When the Promise returned by getDisplayMedia() is resolved, do the following
     })
-    .then((stream) => {
-      preview.srcObject = stream;
+    .then(async (voiceStream) => {
+      desktopStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: audio,
+      });
 
+      const tracks = [
+        ...desktopStream.getVideoTracks(),
+        ...mergeAudioStreams(desktopStream, voiceStream),
+      ];
+
+      const stream = new MediaStream(tracks);
+
+      preview.srcObject = stream;
       // Sets preview video box to the stream
       mediaStream.value = stream;
       // Sets download button's link to the stream
@@ -104,7 +150,7 @@ function startStream() {
     .then((recordedChunks) => {
       // Merges the chunks into a single Blob under video format
       let recordedBlob = new Blob(recordedChunks, {
-        type: "video/webm",
+        type: "video/mp4",
       });
       // Fixes the recorded blob so that it is seekable (Chrome and Firefox bug)
       ysFixWebmDuration(recordedBlob, duration.value, { logger: false }).then(
@@ -210,7 +256,7 @@ function downloadRecordedVideo() {
   // create a link and click it
   const link = document.createElement("a");
   link.href = recordedSource.value;
-  link.download = getDownloadName() + ".webm";
+  link.download = getDownloadName() + ".mp4";
   link.click();
 
   // remove link
