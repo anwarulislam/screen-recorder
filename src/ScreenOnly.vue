@@ -1,54 +1,62 @@
 <template>
-  <div class="container mx-auto text-center">
-    <div class="home-container" v-if="streamStatus === 'NONE'">
-      <button @click="startStream()">
-        <span>Select a screen</span>
-      </button>
+  <div class="container mx-auto py-4 text-center">
+    <!-- PREVIEW SCREEN -->
+    <div v-if="streamStatus !== 'RECORDED'">
+      <video id="preview" class="w-1" autoplay muted></video>
     </div>
+    <!-- PREVIEW SCREEN -->
 
-    <div
-      :class="{
-        hidden: streamStatus === 'NONE' || streamStatus === 'RECORDED',
-      }"
-    >
-      <video id="preview" autoplay muted></video>
-    </div>
-
-    <button
-      ref="startRecordingBtn"
-      aria-label="Start"
-      v-if="streamStatus === 'STREAMING'"
-    >
-      Start recording
-    </button>
-
+    <!-- COUNTDOWN NUMBER -->
     <span class="text-5xl font-bold" v-if="streamStatus === 'INTERVAL'">
       {{ countdownTime }}
     </span>
+    <!-- COUNTDOWN NUMBER -->
 
-    <button
-      v-if="streamStatus === 'RECORDING'"
-      aria-label="Stop"
-      @click="stopStream(mediaStream)"
-    >
-      Stop Recording
-    </button>
-
+    <!-- RECORDED PREVIEW -->
     <div v-if="streamStatus === 'RECORDED'">
-      <video :src="recordedSource" controls></video>
+      <video class="mx-auto mb-5" :src="recordedSource" controls></video>
     </div>
+    <!-- RECORDED PREVIEW -->
 
-    <form action="/" v-if="streamStatus === 'RECORDED'">
-      <button aria-label="New">New Recording</button>
-    </form>
+    <div class="centered-buttons flex justify-center gap-3">
+      <button @click="startStream()" v-if="streamStatus === 'NONE'">
+        <span>Start Recording</span>
+      </button>
 
-    <button
-      v-if="streamStatus === 'RECORDED'"
-      @click="downloadRecordedVideo()"
-      aria-label="Download"
-    >
-      Download
-    </button>
+      <button
+        ref="startRecordingBtn"
+        aria-label="Start"
+        class="hidden"
+        v-if="streamStatus === 'STREAMING'"
+      >
+        Start Actual Recording
+      </button>
+
+      <button
+        v-if="streamStatus === 'RECORDING'"
+        aria-label="Stop"
+        @click="stopStream(mediaStream)"
+      >
+        Stop Recording
+      </button>
+
+      <a
+        v-if="streamStatus === 'RECORDED'"
+        class="button"
+        href=""
+        aria-label="New"
+      >
+        New Recording
+      </a>
+
+      <button
+        v-if="streamStatus === 'RECORDED'"
+        @click="downloadRecordedVideo()"
+        aria-label="Download"
+      >
+        Download
+      </button>
+    </div>
   </div>
 </template>
 
@@ -188,7 +196,7 @@ async function startRecording(stream: MediaStream | null) {
   // The event handler simply pushes the Blob onto the data array
   recorder.ondataavailable = (event) => data.push(event.data);
 
-  await buttonClick(startRecordingBtn.value as HTMLButtonElement);
+  // await buttonClick(startRecordingBtn.value as HTMLButtonElement);
 
   // Hides start button and displays count and stop button
   streamStatus.value = "INTERVAL";
@@ -265,11 +273,13 @@ function downloadRecordedVideo() {
 </script>
 
 <style scoped>
-button {
+button,
+.button {
   @apply rounded py-2 px-4 font-bold;
   @apply bg-blue-500 text-white;
 }
-button:hover {
+button:hover,
+.button:hover {
   @apply bg-blue-700;
 }
 
