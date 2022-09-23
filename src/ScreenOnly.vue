@@ -67,6 +67,14 @@
       <button
         v-if="streamStatus === 'RECORDING'"
         aria-label="Stop"
+        @click="togglePause()"
+      >
+        {{ isPaused ? "Resume Recording" : "Pause Recording" }}
+      </button>
+
+      <button
+        v-if="streamStatus === 'RECORDING'"
+        aria-label="Stop"
         @click="stopStream()"
       >
         Stop Recording
@@ -109,6 +117,7 @@ type MediaRecorderState =
 
 let mediaStream = ref<MediaStream>();
 const streamStatus = ref<MediaRecorderState>("NONE");
+const isPaused = ref(false);
 
 const countdownTime = ref(3);
 const duration = ref(0);
@@ -223,6 +232,16 @@ async function startRecording() {
   await Promise.all([stopped, recorded]);
 
   stopStream();
+}
+
+function togglePause() {
+  if (isPaused.value) {
+    recorder.resume();
+    isPaused.value = false;
+  } else {
+    recorder.pause();
+    isPaused.value = true;
+  }
 }
 
 const handleDataAvailable = (event: any) => {
