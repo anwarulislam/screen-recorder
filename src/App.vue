@@ -4,7 +4,7 @@
     <!-- <WithAudio /> -->
   </div>
 
-  <div class="mx-auto max-w-3xl">
+  <div class="mx-auto max-w-3xl" v-if="isEmbed">
     <pre>
     <code>
       {{ `
