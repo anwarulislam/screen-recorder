@@ -1,8 +1,8 @@
 <template>
   <div class="container mx-auto py-4 text-center">
     <!-- PREVIEW SCREEN -->
-    <div v-if="streamStatus !== 'RECORDED'">
-      <video id="preview" class="w-1" autoplay muted></video>
+    <div>
+      <video id="preview" class="w-0" autoplay muted></video>
     </div>
     <!-- PREVIEW SCREEN -->
 
@@ -62,7 +62,7 @@
       <button
         v-if="streamStatus === 'RECORDING'"
         aria-label="Stop"
-        @click="stopStream(mediaStream)"
+        @click="onClickStopButton()"
       >
         Stop Recording
       </button>
@@ -175,11 +175,13 @@ async function startStream() {
       preview.srcObject = stream;
       // Sets preview video box to the stream
       mediaStream.value = stream;
+
       // Sets download button's link to the stream
       // downloadButtonLink.href = stream;
+
       // Firefox compatibility
       preview.captureStream = preview.captureStream || preview.mozCaptureStream;
-      console.log("captured stream", preview);
+
       // Creates and returns a new Promise which is resolved when the preview video starts to play
       return new Promise((resolve) => (preview.onplaying = resolve));
       // Calls startRecording() with the preview stream and receives recordedChunks (data) when finished recording
@@ -215,9 +217,8 @@ function getSupportedMimeTypes() {
 // Handles starting the recording process
 async function startRecording(stream: MediaStream | null) {
   if (!stream) return;
-  console.log("start recording", stream);
-  // Creates the MediaRecorder that will handle recording the input stream
 
+  // Creates the MediaRecorder that will handle recording the input stream
   var options = { mimeType: getSupportedMimeTypes()[0] };
 
   let recorder = new MediaRecorder(stream, options);
@@ -235,8 +236,6 @@ async function startRecording(stream: MediaStream | null) {
   await wait();
 
   streamStatus.value = "RECORDING";
-
-  console.log("recorder", recorder);
 
   recorder.start();
   startTime = Date.now();
@@ -279,6 +278,10 @@ function wait() {
   return new Promise((resolve) => setTimeout(resolve, delayInMS));
 }
 
+const onClickStopButton = () => {
+  stopStream(mediaStream.value);
+};
+
 // Stops the input stream
 function stopStream(stream: MediaStream | null) {
   console.log("stop stream", stream);
@@ -291,7 +294,6 @@ function stopStream(stream: MediaStream | null) {
 }
 
 function downloadRecordedVideo() {
-  console.log("download");
   // create a link and click it
   const link = document.createElement("a");
   link.href = recordedSource.value;
