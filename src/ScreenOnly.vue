@@ -13,9 +13,36 @@
     <!-- COUNTDOWN NUMBER -->
 
     <!-- RECORDED PREVIEW -->
-    <div v-if="streamStatus === 'RECORDED'">
-      <video class="mx-auto mb-5" :src="recordedSource" controls></video>
-    </div>
+
+    <transition name="modal">
+      <Modal v-if="showDownloadModal" @close="showDownloadModal = false">
+        <template v-slot:body>
+          <div v-if="streamStatus === 'RECORDED'">
+            <video class="mx-auto mb-5" :src="recordedSource" controls></video>
+          </div>
+
+          <div class="centered-buttons flex justify-center gap-3">
+            <a
+              v-if="streamStatus === 'RECORDED'"
+              class="button"
+              href=""
+              aria-label="New"
+            >
+              New Recording
+            </a>
+
+            <button
+              v-if="streamStatus === 'RECORDED'"
+              @click="downloadRecordedVideo()"
+              aria-label="Download"
+            >
+              Download
+            </button>
+          </div>
+        </template>
+      </Modal>
+    </transition>
+
     <!-- RECORDED PREVIEW -->
 
     <div class="centered-buttons flex justify-center gap-3">
@@ -64,6 +91,7 @@
 import ysFixWebmDuration from "fix-webm-duration";
 import { ref } from "vue";
 import { getDownloadName } from "./helpers";
+import Modal from "./components/Modal.vue";
 
 const startRecordingBtn = ref<HTMLButtonElement | null>(null);
 
@@ -83,6 +111,8 @@ let startTime = 0;
 
 const recordedSource = ref<any>(null);
 let preview = ref<HTMLVideoElement | any>(null);
+
+const showDownloadModal = ref(false);
 
 const mergeAudioStreams = (
   desktopStream: MediaStream,
@@ -257,6 +287,7 @@ function stopStream(stream: MediaStream | null) {
   // Calls MediaStreamTrack.stop() on each track in the stream
   stream.getTracks().forEach((track) => track.stop());
   streamStatus.value = "RECORDED";
+  showDownloadModal.value = true;
 }
 
 function downloadRecordedVideo() {
