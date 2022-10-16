@@ -181,6 +181,10 @@ async function startStream() {
     ...mergeAudioStreams(desktopStream, voiceStream),
   ];
 
+  tracks[0].addEventListener("ended", function () {
+    stopStream();
+  });
+
   // Sets preview video box to the stream
   window.stream = new MediaStream(tracks);
   // mediaStream.value = stream;
