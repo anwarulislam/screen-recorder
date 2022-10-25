@@ -1,10 +1,10 @@
 <template>
-  <div class="container mx-auto py-4 text-center">
+  <div class="x-container x-mx-auto x-py-4 x-text-center">
     <!-- PREVIEW SCREEN -->
     <div>
       <video
         :srcObject.prop="mediaStream"
-        class="mx-auto w-0"
+        class="x-mx-auto x-w-0"
         autoplay
         muted
       ></video>
@@ -12,7 +12,7 @@
     <!-- PREVIEW SCREEN -->
 
     <!-- COUNTDOWN NUMBER -->
-    <span class="text-5xl font-bold" v-if="streamStatus === 'INTERVAL'">
+    <span class="x-text-5xl x-font-bold" v-if="streamStatus === 'INTERVAL'">
       {{ countdownTime }}
     </span>
     <!-- COUNTDOWN NUMBER -->
@@ -23,10 +23,14 @@
       <Modal v-if="showDownloadModal" @close="showDownloadModal = false">
         <template v-slot:body>
           <div v-if="streamStatus === 'RECORDED'">
-            <video class="mx-auto mb-5" :src="recordedSource" controls></video>
+            <video
+              class="x-mx-auto x-mb-5"
+              :src="recordedSource"
+              controls
+            ></video>
           </div>
 
-          <div class="centered-buttons flex justify-center gap-3">
+          <div class="centered-buttons x-flex x-justify-center x-gap-3">
             <a
               v-if="streamStatus === 'RECORDED'"
               class="button"
@@ -50,7 +54,7 @@
 
     <!-- RECORDED PREVIEW -->
 
-    <div class="centered-buttons flex justify-center gap-3">
+    <div class="centered-buttons x-flex x-justify-center x-gap-3">
       <button @click="startStream()" v-if="streamStatus === 'NONE'">
         <span>Start Recording</span>
       </button>
@@ -102,7 +106,7 @@
 
 <script setup lang="ts">
 import ysFixWebmDuration from "fix-webm-duration";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { getDownloadName } from "./helpers";
 import Modal from "./components/Modal.vue";
 
@@ -323,16 +327,16 @@ function downloadRecordedVideo() {
 <style scoped>
 button,
 .button {
-  @apply rounded py-2 px-4 font-bold;
-  @apply bg-blue-500 text-white;
+  @apply x-rounded x-py-2 x-px-4 x-font-bold;
+  @apply x-bg-blue-500 x-text-white;
 }
 button:hover,
 .button:hover {
-  @apply bg-blue-700;
+  @apply x-bg-blue-700;
 }
 
 video {
-  @apply rounded;
-  @apply max-h-96;
+  @apply x-rounded;
+  @apply x-max-h-96;
 }
 </style>
