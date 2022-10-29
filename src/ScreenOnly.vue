@@ -4,7 +4,7 @@
     <div>
       <video
         :srcObject.prop="mediaStream"
-        class="x-mx-auto x-w-0"
+        class="m-video x-mx-auto x-w-0"
         autoplay
         muted
       ></video>
@@ -24,23 +24,19 @@
         <template v-slot:body>
           <div v-if="streamStatus === 'RECORDED'">
             <video
-              class="x-mx-auto x-mb-5"
+              class="m-video x-mx-auto x-mb-5"
               :src="recordedSource"
               controls
             ></video>
           </div>
 
           <div class="centered-buttons x-flex x-justify-center x-gap-3">
-            <a
-              v-if="streamStatus === 'RECORDED'"
-              class="button"
-              href=""
-              aria-label="New"
-            >
+            <a v-if="streamStatus === 'RECORDED'" class="m-button" href="">
               New Recording
             </a>
 
             <button
+              class="m-button"
               v-if="streamStatus === 'RECORDED'"
               @click="downloadRecordedVideo()"
               aria-label="Download"
@@ -55,20 +51,25 @@
     <!-- RECORDED PREVIEW -->
 
     <div class="centered-buttons x-flex x-justify-center x-gap-3">
-      <button @click="startStream()" v-if="streamStatus === 'NONE'">
+      <button
+        class="m-button"
+        @click="startStream()"
+        v-if="streamStatus === 'NONE'"
+      >
         <span>Start Recording</span>
       </button>
 
       <button
+        class="m-button x-hidden"
         ref="startRecordingBtn"
         aria-label="Start"
-        class="hidden"
         v-if="streamStatus === 'STREAMING'"
       >
         Start Actual Recording
       </button>
 
       <button
+        class="m-button"
         v-if="streamStatus === 'RECORDING'"
         aria-label="Stop"
         @click="togglePause()"
@@ -77,6 +78,7 @@
       </button>
 
       <button
+        class="m-button"
         v-if="streamStatus === 'RECORDING'"
         aria-label="Stop"
         @click="stopStream()"
@@ -86,7 +88,7 @@
 
       <a
         v-if="streamStatus === 'RECORDED'"
-        class="button"
+        class="m-button"
         href=""
         aria-label="New"
       >
@@ -94,6 +96,7 @@
       </a>
 
       <button
+        class="m-button"
         v-if="streamStatus === 'RECORDED'"
         @click="downloadRecordedVideo()"
         aria-label="Download"
@@ -325,17 +328,17 @@ function downloadRecordedVideo() {
 </script>
 
 <style scoped>
-button,
-.button {
+.m-button {
   @apply x-rounded x-py-2 x-px-4 x-font-bold;
   @apply x-bg-blue-500 x-text-white;
+  @apply x-text-base;
+  font-family: sans-serif;
 }
-button:hover,
-.button:hover {
+.m-button:hover {
   @apply x-bg-blue-700;
 }
 
-video {
+.m-video {
   @apply x-rounded;
   @apply x-max-h-96;
 }
