@@ -1,3 +1,15 @@
-@tailwind base;
+/* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
+
+#screen-recorder .m-button,
+#screen-recorder button {
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+/* a tag */
+#screen-recorder a {
+  text-decoration: none;
+}
