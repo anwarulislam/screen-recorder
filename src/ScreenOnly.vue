@@ -50,6 +50,10 @@
 
     <!-- RECORDED PREVIEW -->
 
+    <div v-if="streamStatus === 'NONE'" class="x-mb-5">
+      <Settings @onChange="onSettingChanges" />
+    </div>
+
     <div class="centered-buttons x-flex x-justify-center x-gap-3">
       <button
         class="m-button"
@@ -112,6 +116,13 @@ import ysFixWebmDuration from "fix-webm-duration";
 import { ref } from "vue";
 import { getDownloadName } from "./helpers";
 import Modal from "./components/Modal.vue";
+import Settings, { Option } from "./components/Settings.vue";
+
+const option = ref<Option>();
+
+const onSettingChanges = (newOption: Option) => {
+  option.value = newOption;
+};
 
 const startRecordingBtn = ref<HTMLButtonElement | null>(null);
 
@@ -330,12 +341,12 @@ function downloadRecordedVideo() {
 <style scoped>
 .m-button {
   @apply x-rounded x-py-2 x-px-4 x-font-bold;
-  @apply x-bg-blue-500 x-text-white;
+  @apply x-bg-orange-500 x-text-white;
   @apply x-text-base;
   font-family: sans-serif;
 }
 .m-button:hover {
-  @apply x-bg-blue-700;
+  @apply x-bg-orange-600;
 }
 
 .m-video {
