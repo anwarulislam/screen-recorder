@@ -1,5 +1,7 @@
 <template>
-  <div class="x-container x-mx-auto x-py-4 x-text-center">
+  <div
+    class="x-container x-mx-auto x-py-4 x-text-center x-flex x-items-center x-justify-center x-gap-10"
+  >
     <!-- PREVIEW SCREEN -->
     <div>
       <video
@@ -50,7 +52,7 @@
 
     <!-- RECORDED PREVIEW -->
 
-    <div v-if="streamStatus === 'NONE'" class="x-mb-5">
+    <div v-if="streamStatus === 'NONE'">
       <Settings @onChange="onSettingChanges" />
     </div>
 
@@ -340,13 +342,13 @@ function downloadRecordedVideo() {
 
 <style scoped>
 .m-button {
-  @apply x-rounded x-py-2 x-px-4 x-font-bold;
-  @apply x-bg-orange-500 x-text-white;
+  @apply x-rounded-lg x-py-4 x-px-8 x-font-bold;
+  @apply x-bg-primary x-text-white;
   @apply x-text-base;
   font-family: sans-serif;
 }
 .m-button:hover {
-  @apply x-bg-orange-600;
+  @apply x-bg-primary x-opacity-[.9];
 }
 
 .m-video {
