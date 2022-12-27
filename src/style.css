@@ -5,7 +5,6 @@
 #screen-recorder .m-button,
 #screen-recorder button {
   border: none;
-  padding: 1rem;
   cursor: pointer;
 }
 
@@ -20,4 +19,12 @@
   height: 1em;
   overflow: visible;
   vertical-align: -0.125em;
+}
+
+input:checked + .custom-checkbox-label .x-icon .inactive {
+  display: none;
+}
+
+input:not(:checked) + .custom-checkbox-label .x-icon .active {
+  display: none;
 }

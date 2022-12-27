@@ -26,10 +26,8 @@
         </div>
         <div class="custom-checkbox text-left x-p-4">
           <!-- slot -->
-          <div>
-            <span class="x-icon">
-              <slot></slot>
-            </span>
+          <div class="x-icon">
+            <slot></slot>
           </div>
           <span>{{ label }}</span>
         </div>
@@ -63,11 +61,11 @@ const onChange = (e: any) => {
   background: #e5e7eb;
   cursor: pointer;
   position: relative;
-  border-radius: 8px;
+  border-radius: 16px;
   display: block;
 
-  width: 173px;
-  height: 138px;
+  width: 180px;
+  height: 120px;
 }
 
 .custom-checkbox-item {
@@ -77,7 +75,7 @@ const onChange = (e: any) => {
 
 .custom-checkbox-item,
 .custom-checkbox {
-  border-radius: 8px;
+  border-radius: 15px;
   position: absolute;
   inset: 4px;
   transition: background-color 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
@@ -110,6 +108,10 @@ const onChange = (e: any) => {
   background: #e5e7eb;
 }
 
+.custom-checkbox-label:hover {
+  background: #e5e7eb;
+}
+
 /* if checked */
 
 .x-icon {
@@ -128,8 +130,8 @@ input:checked + .custom-checkbox-label .custom-checkbox-item {
 }
 
 input:checked + .custom-checkbox-label .x-tick {
-  border: 2px solid limegreen;
-  background-color: limegreen;
+  border: 2px solid;
+  @apply x-border-primary x-bg-primary;
 }
 
 .x-icon svg {
