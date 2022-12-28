@@ -110,17 +110,51 @@
         Download
       </button>
     </div>
+
+    <transition name="modal">
+      <Modal v-if="showPremiumModal" @close="showPremiumModal = false">
+        <template v-slot:body>
+          <div>
+            <h1 class="x-text-lg x-font-semibold">Premium Fetaure</h1>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod
+              placeat iusto officia eaque voluptatibus, amet corrupti nulla in
+              blanditiis quas consectetur quis officiis ab fugit est quisquam,
+              illo assumenda saepe!
+            </p>
+          </div>
+          <a :href="settings.link">
+            <img class="x-w-full" :src="BASE_URL + settings.promoImage" />
+          </a>
+        </template>
+      </Modal>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import ysFixWebmDuration from "fix-webm-duration";
+import Cookies from "js-cookie";
 import { ref } from "vue";
-import { getDownloadName } from "./helpers";
 import Modal from "./components/Modal.vue";
 import Settings, { Option } from "./components/Settings.vue";
+import { getDownloadName } from "./helpers";
 
 const option = ref<Option>();
+const BASE_URL = "https://convert.7-cats.com";
+
+const showPremiumModal = ref(false);
+const settings = ref<{ promoImage?: string; link?: string }>({});
+
+const getSettings = () => {
+  fetch(`${BASE_URL}/public/settings-rc.json`)
+    .then((res) => res.json())
+    .then((data) => {
+      settings.value = data;
+      console.log(data);
+    });
+};
+getSettings();
 
 const onSettingChanges = (newOption: Option) => {
   option.value = newOption;
@@ -179,6 +213,11 @@ const mergeAudioStreams = (
 };
 
 async function startStream() {
+  if (isExpired()) {
+    showPremiumModal.value = true;
+    return;
+  }
+
   const audio = true;
   const mic = true;
 
@@ -246,6 +285,8 @@ async function startRecording() {
   // Creates a new Promise which is resolved when the MediaRecorder's onstop event handler is called
   // Rejects if its onerror event handler is called
   let stopped = new Promise((resolve, reject) => {
+    setExpiry();
+
     recorder.onstop = resolve;
     recorder.onerror = (event: any) => reject(event);
   });
@@ -256,6 +297,26 @@ async function startRecording() {
   await Promise.all([stopped, recorded]);
 
   stopStream();
+}
+
+function setExpiry() {
+  let isRecorded = 1;
+  if (Cookies.get("is_recorded")) {
+    isRecorded = Number(parseInt(Cookies.get("is_recorded") || "1"));
+  }
+  isRecorded++;
+  Cookies.set("is_recorded", `${isRecorded}`, {
+    expires: 1,
+    path: "",
+  });
+}
+
+function isExpired() {
+  let isRecorded = 0;
+  if (Cookies.get("is_recorded")) {
+    isRecorded = Number(parseInt(Cookies.get("is_recorded") || "0"));
+  }
+  return isRecorded > 0 ? true : false;
 }
 
 function togglePause() {

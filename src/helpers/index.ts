@@ -55,3 +55,10 @@ function pad(n: number) {
     return n;
   }
 }
+
+export function addScript(src: string) {
+  const script = document.createElement("script");
+  script.src;
+  script.async = true;
+  document.body.appendChild(script);
+}
