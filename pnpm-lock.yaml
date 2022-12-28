@@ -1,9 +1,11 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/js-cookie': ^3.0.2
   '@vitejs/plugin-vue': ^3.0.3
   autoprefixer: ^10.4.8
   fix-webm-duration: ^1.0.5
+  js-cookie: ^3.0.1
   postcss: ^8.4.16
   prettier: ^2.7.1
   prettier-plugin-tailwindcss: ^0.1.13
@@ -16,10 +18,12 @@ specifiers:
 
 dependencies:
   fix-webm-duration: 1.0.5
+  js-cookie: 3.0.1
   vite-plugin-css-injected-by-js: 2.2.0_vite@3.2.5
   vue: 3.2.45
 
 devDependencies:
+  '@types/js-cookie': 3.0.2
   '@vitejs/plugin-vue': 3.2.0_vite@3.2.5+vue@3.2.45
   autoprefixer: 10.4.13_postcss@8.4.20
   postcss: 8.4.20
@@ -90,6 +94,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.14.0
+    dev: true
+
+  /@types/js-cookie/3.0.2:
+    resolution: {integrity: sha512-6+0ekgfusHftJNYpihfkMu8BWdeHs9EOJuGcSofErjstGPfPGEu9yTu4t460lTzzAMl2cM5zngQJqPMHbbnvYA==}
     dev: true
 
   /@vitejs/plugin-vue/3.2.0_vite@3.2.5+vue@3.2.45:
@@ -640,6 +648,11 @@ packages:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
     dev: true
+
+  /js-cookie/3.0.1:
+    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
+    engines: {node: '>=12'}
+    dev: false
 
   /lilconfig/2.0.6:
     resolution: {integrity: sha512-9JROoBW7pobfsx+Sq2JsASvCo6Pfo6WWoUW79HuB1BCoBXD4PLWJPqDF6fNj67pqBYTbAHkE57M1kS/+L1neOg==}
